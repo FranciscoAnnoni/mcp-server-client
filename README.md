@@ -1,48 +1,40 @@
-# devex-mcp
+# DevEx-MCP
 **Team:** core-services  
+**Created by:** Francisco Annoni  
 **Entorno:** Shared Services (DevEX)
 
 📚 **[Documentación completa en Confluence](https://rappidev.atlassian.net/wiki/spaces/SHS/pages/4864868376/MCP+DevEx)**
 
 ## 📖 Descripción
 
-Este repositorio está compuesto principalmente por dos partes: el **cliente** y el **servidor**.
+**DevEx-MCP** es la herramienta que conecta tu agente de IA (GitHub Copilot, Claude, etc.) con la documentación de los microservicios de Rappi.
 
-Sin embargo, cuenta con un tercer módulo llamado `devex_mcp_setup`, cuya función es gestionar la instalación y la configuración del entorno necesario para la correcta ejecución del MCP.
+![DevEx-MCP Architecture](/Users/francisco.annoni/.gemini/antigravity/brain/6885a29f-ae1b-4a51-ae22-0d4ac78b98f9/uploaded_media_1769476623779.png)
 
-Aunque los módulos de cliente y servidor son los componentes centrales del sistema, `devex_mcp_setup` cumple un rol esencial al facilitar la preparación del ecosistema.
+Este MCP (Model Context Protocol) server permite a los LLMs (Large Language Models) consultar y analizar automáticamente:
+- 📋 Especificaciones OpenAPI/Swagger de microservicios
+- 📚 Catálogo de microservicios de Rappi
+- 📖 READMEs de los servicios
 
-*En este documento analizaremos principalmente el servidor, ya que el cliente cuenta con su propia documentación.*
+## 🎯 Objetivo
 
-### Servidor:
-Este MCP (Model Context Protocol) server permite a los LLMs (Large Language Models) consultar y analizar la documentación OpenAPI/Swagger de cualquier microservicio de Rappi de forma automática y estructurada.
+**Ahorrarte tiempo.** Ya no necesitas buscar documentación manual ni copiar y pegar contexto. Esta herramienta permite que el LLM consulte automáticamente Swaggers, Contratos y READMEs de los microservicios para entender los requerimientos y generarte la función perfecta.
 
-**¿Para qué sirve?**  
-Facilita que herramientas de IA (como GitHub Copilot, Claude, ChatGPT) puedan:
-- 🤖 Obtener información actualizada sobre APIs de Rappi sin búsquedas manuales
-- 📚 Entender contratos de servicios (endpoints, parámetros, schemas)
-- 🔍 Ayudar a desarrolladores a integrar servicios correctamente
-- ✅ Validar que la documentación OpenAPI esté disponible y sea válida
+### ⚠️ Aclaración Importante
 
-**Casos de uso:**
-- Un desarrollador pregunta: *"¿Cómo uso el API de delayed-tasks?"* → El LLM consulta este MCP y obtiene toda la especificación OpenAPI
-- Validación automática de que un microservicio exponga correctamente su documentación
-- Análisis de dependencias entre servicios basándose en sus contratos
+El MCP solo puede obtener información de microservicios que estén correctamente documentados.
 
-## Características
+**Tu documentación es clave:** Al mantenerla al día, permites mejorar el funcionamiento de este MCP y de futuras herramientas del ecosistema. Si tu microservicio no está documentado o simplemente no sabes cómo hacerlo, consulta la guía de documentación.
 
-Este MCP server proporciona una herramienta (tool) para:
-- 📋 Obtener la especificación OpenAPI/Swagger completa de cualquier microservicio
-- 🔗 Ver todos los endpoints disponibles con sus métodos HTTP
-- 📦 Explorar los schemas de datos (request/response)
-- 🔧 Extraer información de autenticación y requisitos del API
+👉 **[Guía: Cómo documentar correctamente los microservicios](https://rappidev.atlassian.net/wiki/spaces/SHS/pages/4864868376/MCP+DevEx)**
 
-## 🚀 Instalación y Configuración
+## 🚀 Instalación
 
-### ⚡ Instalación Rápida (Usuarios)
+### Pasos para la Instalación
 
-1.  **Conéctate a la VPN de Rappi**. 🔒
-2.  Ejecuta el siguiente comando en tu terminal (esto instalará el cliente y configurará el MCP para tu IDE):
+1. **Conectarse a la VPN de Rappi** 🔒 (dev/prod - da lo mismo)
+
+2. **Ejecutar el siguiente comando** en la consola y seguir los pasos del instalador:
 
 **macOS:**
 ```bash
@@ -54,122 +46,87 @@ curl https://api.platform.rappi.com/v1/devex-mcp/install | bash
 irm https://api.platform.rappi.com/v1/devex-mcp/install.ps1 | iex
 ```
 
-### 🛠️ Configuración Manual / Desarrollo
+El instalador se encargará de:
+- ✅ Instalar el cliente MCP
+- ✅ Configurar automáticamente tu IDE (VS Code, Cursor, etc.)
+- ✅ Establecer la conexión con el servidor
 
-### 1. Instalar dependencias
+## 🏗️ Composición del Proyecto
 
-Desde la raíz del repositorio:
+Este repositorio está compuesto por **dos componentes principales** y un **módulo de instalación**:
 
-```bash
-uv sync
-```
+### 1. 🖥️ Servidor (`devex_mcp/`)
 
-### 2. Configurar variables de entorno
+El servidor MCP que expone las herramientas (tools) para que los LLMs puedan consultar información de los microservicios.
 
-Crear un archivo `.env` en la raíz del repositorio (`/devex-mcp/.env`) con las siguientes variables:
+#### Herramientas Disponibles
 
-#### Variables Requeridas
+El servidor proporciona **3 herramientas principales**:
 
-```bash
-# Modo de transporte del MCP server
-# Opciones: "stdio" (desarrollo local) | "streamable-http" (producción)
-TRANSPORT=streamable-http
+##### 🔍 `search_microservices`
+Busca microservicios en el Catálogo de Rappi basándose en un nombre, coincidencia parcial o descripción.
 
-# Host donde se levanta el servidor (solo para streamable-http)
-HOST=0.0.0.0
-
-# Puerto del servidor (solo para streamable-http)
-PORT=8000
-
-# Path HTTP del endpoint MCP (solo para streamable-http)
-HTTP_PATH=/api/devex-mcp
-
-# URL del API de descriptors-analyzer (servicio que almacena los OpenAPI specs)
-DESCRIPTORS_API_URL=https://api.platform.rappi.com/api/descriptors-analyzer
-
-# Timeout en segundos para las peticiones al API
-DESCRIPTORS_API_TIMEOUT=30
-```
-
-#### Ejemplo para Desarrollo Local (.env)
-
-```bash
-TRANSPORT=stdio
-```
-
-#### Ejemplo para Producción (.env)
-
-```bash
-TRANSPORT=streamable-http
-HOST=0.0.0.0
-PORT=8000
-HTTP_PATH=/api/devex-mcp
-DESCRIPTORS_API_URL=https://api.platform.rappi.com/api/descriptors-analyzer
-DESCRIPTORS_API_TIMEOUT=30
-```
-
-## 🎯 Uso
-
-**Importante:** Todos los comandos deben ejecutarse desde la raíz del repositorio (`/devex-mcp/`).
-
-### Modo Desarrollo (Local con stdio)
-
-```bash
-uv run mcp dev devex_mcp/server.py
-```
-
-### Modo Producción (HTTP server)
-
-```bash
-uv run python devex_mcp/server.py
-```
-
-El servidor estará disponible en:
-- **Health check:** `http://localhost:8000/api/devex-mcp/health`
-- **MCP endpoint:** `http://localhost:8000/api/devex-mcp/`
-
-### Con Docker Compose
-
-#### Levantar el contenedor
-
-```bash
-# Build y levantar en background
-docker-compose up --build -d
-
-# Ver logs en tiempo real
-docker-compose logs -f devex-mcp
-
-# Ver estado del contenedor
-docker-compose ps
-```
-
-#### Detener el contenedor
-
-```bash
-# Detener y eliminar contenedor (mantiene la imagen)
-docker-compose down
-
-# Detener, eliminar contenedor y eliminar volúmenes
-docker-compose down -v
-```
-
-#### Health check
-
-```bash
-curl http://localhost:8000/api/devex-mcp/health
-```
-
-## 🔧 Tool Disponible
-
-### `fetch_api_swagger`
-
-Obtiene la especificación completa OpenAPI/Swagger de un microservicio de Rappi.
+**Cuándo usar:**
+- Como PRIMER paso cuando la solicitud es vaga (ej: "algo para pagos")
+- Para encontrar el nombre exacto en kebab-case si el usuario proporciona un nombre legible
 
 **Parámetros:**
-- `microserviceName` (string, requerido): Nombre del microservicio en Rappi
-  - Ejemplos: `"delayed-tasks-api"`, `"cms-gateway"`, `"etc.."`
+- `possible_service_name` (string): Término de búsqueda (ej: 'order', 'payment', 'cms-gateway')
 
-**Retorna (JSON):**
+**Retorna:**
+```json
+{
+  "service_name": "nombre-del-servicio",
+  "repository": "https://github.com/rappi/...",
+  "metadata": {
+    "area": "...",
+    "team": "...",
+    "tier": "..."
+  }
+}
+```
+
+**🔐 Autenticación:** Requiere token de usuario (header `X-Rappi-Token`)
+
+---
+
+##### 📖 `fetch_readmes`
+Obtiene los archivos README de una lista de microservicios para analizar su funcionalidad en profundidad.
+
+**Cuándo usar:**
+- Para desambiguar entre servicios similares encontrados en la búsqueda
+- Cuando el usuario pregunta "¿Qué hace el servicio X?" o "¿Cómo usar X?"
+
+**Parámetros:**
+- `service_names` (List[str]): Lista de nombres exactos de microservicios
+
+**Retorna:**
+```json
+[
+  {
+    "microservice": "nombre-del-servicio",
+    "readme": "Contenido completo o truncado del README"
+  }
+]
+```
+
+**💡 Tip:** No obtener READMEs de TODOS los resultados de búsqueda. Seleccionar solo los 3-5 candidatos más prometedores.
+
+**🔐 Autenticación:** No requiere token
+
+---
+
+##### 📋 `fetch_api_swagger`
+Obtiene la especificación completa OpenAPI/Swagger de un microservicio específico de Rappi.
+
+**Cuándo usar:**
+- SOLO cuando se ha identificado el microservicio correcto
+- Esencial para tareas que requieren endpoints específicos, estructuras de payload o métodos de autenticación
+
+**Parámetros:**
+- `microservice_name` (string): Nombre exacto del microservicio (ej: 'delayed-tasks-api')
+
+**Retorna:**
 ```json
 {
   "microservice": "Título del API",
@@ -195,6 +152,80 @@ Obtiene la especificación completa OpenAPI/Swagger de un microservicio de Rappi
 - ✅ Códigos de respuesta (200, 400, 500, etc.)
 - ✅ Modelos de datos (schemas)
 
+**🔐 Autenticación:** No requiere token
+
+---
+
+### 2. 💻 Cliente (`devex_mcp_client/`)
+
+El cliente MCP que se instala en tu máquina y se conecta con tu IDE para comunicarse con el servidor.
+
+📚 **[Ver documentación completa del cliente](devex_mcp_client/README.md)**
+
+El cliente se encarga de:
+- Establecer la conexión con el servidor MCP
+- Gestionar la autenticación del usuario
+- Mantener la sesión activa
+- Auto-actualizarse cuando hay nuevas versiones
+
+---
+
+### 3. ⚙️ Instalador (`devex_mcp_setup/`)
+
+Componente de auto-instalación que configura automáticamente la herramienta en las computadoras de los usuarios.
+
+**Archivos de instalación:**
+- `setup.sh` - Script de instalación para macOS/Linux
+- `setup.ps1` - Script de instalación para Windows (PowerShell)
+
+Estos scripts se sirven automáticamente desde el servidor en:
+- `https://api.platform.rappi.com/v1/devex-mcp/install` (macOS/Linux)
+- `https://api.platform.rappi.com/v1/devex-mcp/install.ps1` (Windows)
+
+## 🛠️ Desarrollo
+
+### Requisitos Previos
+
+- Python 3.10+
+- `uv` (gestor de paquetes)
+- Docker (opcional, para desarrollo con contenedores)
+
+### Instalación para Desarrollo
+
+```bash
+# 1. Clonar el repositorio
+git clone https://github.com/rappi-inc/devex-mcp.git
+cd devex-mcp
+
+# 2. Instalar dependencias
+uv sync
+
+# 3. Ejecutar en modo desarrollo
+uv run mcp dev devex_mcp/server.py
+```
+
+### Variables de Entorno
+
+Las variables de entorno están configuradas en el `docker-compose.yml` para producción. Para desarrollo local, puedes crear un archivo `.env`:
+
+```bash
+# Modo de transporte (stdio para desarrollo local)
+TRANSPORT=stdio
+```
+
+### Ejecutar con Docker
+
+```bash
+# Levantar el contenedor
+docker-compose up --build -d
+
+# Ver logs
+docker-compose logs -f devex-mcp
+
+# Health check
+curl http://localhost:8000/api/devex-mcp/health
+```
+
 ## 🧪 Testing y Calidad de Código
 
 Este proyecto cumple con los requisitos de producción de DevEX:
@@ -203,27 +234,32 @@ Este proyecto cumple con los requisitos de producción de DevEX:
 - **Coverage**: **100%** 🎯
 - **Configuración SonarQube**: ✅
 
-### Comandos
+### Comandos de Testing
 
 ```bash
-# 1. Sincronizar dependencias (incluyendo pytest)
+# Sincronizar dependencias (incluyendo pytest)
 uv sync --all-extras
 
-# 2. Ejecutar tests
+# Ejecutar tests
 uv run pytest
 
-# 3. Ejecutar tests con coverage
+# Ejecutar tests con coverage
 uv run pytest --cov=devex_mcp --cov-report=html --cov-report=term
-# para ver el coverage
+
+# Ver reporte de coverage
 open htmlcov/index.html
 
-# 4. Análisis de SonarQube (requiere sonar-scanner instalado)
+# Análisis de SonarQube
 uv run pytest --cov=devex_mcp --cov-report=xml
 sonar-scanner
 ```
 
-### Resultados
+## 📞 ¿Necesitas Ayuda?
 
-- **25 tests pasando** ✅
-- **100% coverage** en todo el código productivo
-- Los archivos generados (`htmlcov/`, `coverage.xml`, `.coverage`) están en `.gitignore`
+Como siempre, quedamos atentos a cualquier duda o feedback que puedan tener:
+- 💬 Consulta en el canal de Slack del equipo
+- 🏷️ Menciona a `@platform-product-guild`
+
+---
+
+**Creado con ❤️ por el equipo de DevEX**
