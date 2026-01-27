@@ -1,0 +1,15 @@
+[project]
+name = "devex-mcp-installer"
+version = "1.0.0"
+description = "Instalador interactivo para DevEx MCP Client"
+requires-python = ">=3.13"
+dependencies = [
+    "keyring",
+    "httpx"
+]
+
+[project.scripts]
+devex-mcp-installer = "installer:main"
+
+[tool.setuptools]
+py-modules = ["installer", "auth_installer"]

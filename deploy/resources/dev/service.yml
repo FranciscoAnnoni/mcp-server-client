@@ -1,0 +1,20 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: 'devex-mcp'
+  namespace: devex-mcp-dev
+  labels:
+    app: devex-mcp
+spec:
+  selector:
+    app: devex-mcp
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
+      name: tcp
+    - protocol: TCP
+      port: 443
+      targetPort: 8000
+      name: tls

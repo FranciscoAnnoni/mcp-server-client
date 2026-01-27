@@ -1,0 +1,18 @@
+FROM python:3.13-slim
+
+WORKDIR /app
+ENV PYTHONPATH=/app
+
+# Copia los archivos de dependencias
+COPY requirements.txt requirements-test.txt ./
+
+# Instala dependencias con pip
+RUN pip install --no-cache-dir -r requirements.txt -r requirements-test.txt && \
+    rm -rf /root/.cache
+
+# Copia el código fuente y los tests
+COPY devex_mcp/ ./devex_mcp/
+COPY test/ ./test/
+
+# Ejecuta los tests
+CMD ["pytest", "test/"]

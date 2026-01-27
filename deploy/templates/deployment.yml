@@ -1,0 +1,55 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: devex-mcp
+  namespace: devex-mcp-$ENV
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: devex-mcp
+  template:
+    metadata:
+      labels:
+        app: devex-mcp
+        tag: $TAG
+        revision: $REVISION
+    spec:
+      nodeSelector:
+        name: gp
+      containers:
+        - name: devex-mcp
+          image: "060422201113.dkr.ecr.us-west-2.amazonaws.com/$ECR_REPO:$TAG"
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: "2"
+              memory: "512M"
+            requests:
+              cpu: "1"
+              memory: "512M"
+          ports:
+            - containerPort: 8000
+          readinessProbe:
+            httpGet:
+              path: '/health'
+              port: 8000
+              scheme: HTTP
+          env:
+            - name: HOST
+              value: 0.0.0.0
+            - name: PORT
+              value: "8000"
+            - name: HTTP_PATH
+              value: /v1/devex-mcp
+            - name: TRANSPORT
+              value: streamable-http
+            - name: DESCRIPTORS_API_URL
+              value: http://descriptors-analyzer.descriptors-analyzer-$ENV.svc.cluster.local/api/descriptors-analyzer
+            - name: DESCRIPTORS_API_TIMEOUT
+              value: "30"
+            - name: MS_CATALOG_API_URL
+              value: http://ms-catalog.ms-catalog-$ENV.svc.cluster.local/v1/microservices
+            - name: MS_CATALOG_API_TIMEOUT
+              value: "30"

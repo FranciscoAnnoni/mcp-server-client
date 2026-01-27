@@ -1,0 +1,47 @@
+version: '3'
+services:
+  # ============================================
+  # AMBIENTE PRODUCTIVO (CI/CD)
+  # ============================================
+  test:
+    build: 
+      context: .
+      dockerfile: Dockerfile.test
+    volumes:
+      - ${MY_WORKSPACE}:/ws
+    working_dir: /ws${WORKSPACE_PATH:-/}
+    user: ${MY_USER:-root}
+    command: pytest --capture=no -vv --cov-report xml:coverage.xml --cov=/app
+
+  # ============================================
+  # AMBIENTE DE DESARROLLO LOCAL
+  # Para usar: docker compose up devex-mcp
+  #         o: docker compose up devex-mcp-test
+  # ============================================
+  devex-mcp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: devex-mcp
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./devex_mcp:/app/devex_mcp
+      - ./devex_mcp_setup:/app/devex_mcp_setup
+    environment:
+      - HOST=0.0.0.0
+      - PORT=8000
+      - HTTP_PATH=/v1/devex-mcp
+      - TRANSPORT=streamable-http
+      - DESCRIPTORS_API_URL=https://api.platform.rappi.com/api/descriptors-analyzer
+      - DESCRIPTORS_API_TIMEOUT=30
+      - MS_CATALOG_API_URL=https://api.platform.rappi.com/v1/microservices
+      - MS_CATALOG_API_TIMEOUT=30
+    restart: unless-stopped
+
+  devex-mcp-test:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    container_name: devex-mcp-test
+    command: pytest --capture=no -vv --cov-report xml:coverage.xml --cov=/app
