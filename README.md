@@ -9,7 +9,8 @@
 
 **DevEx-MCP** is the tool that connects your AI agent (GitHub Copilot, Claude, etc.) with Rappi's microservices documentation.
 
-![DevEx-MCP Architecture](/Users/francisco.annoni/.gemini/antigravity/brain/6885a29f-ae1b-4a51-ae22-0d4ac78b98f9/uploaded_media_1769476623779.png)
+<img width="786" height="245" alt="Captura de pantalla 2026-01-26 a la(s) 10 43 04 p  m" src="https://github.com/user-attachments/assets/6ab98640-3963-453f-ad98-81f88e1fc195" />
+
 
 This MCP (Model Context Protocol) server allows LLMs (Large Language Models) to automatically query and analyze:
 - 📋 OpenAPI/Swagger specifications of microservices
