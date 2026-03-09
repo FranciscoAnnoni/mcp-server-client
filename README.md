@@ -266,4 +266,4 @@ As always, we are available for any questions or feedback you may have:
 
 ---
 
-**Created with ❤️ by the DevEX team**
+**Created by Francisco Annoni**
