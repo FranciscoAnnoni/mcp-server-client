@@ -3,7 +3,7 @@
 **Created by:** Francisco Annoni  
 **Environment:** Shared Services (DevEX)
 
-📚 **[Full Documentation on Confluence](https://rappidev.atlassian.net/wiki/spaces/SHS/pages/4864868376/MCP+DevEx)**
+📚 **[Full Documentation on Confluence]**
 
 ## 📖 Description
 
@@ -27,7 +27,7 @@ The MCP can only obtain information from microservices that are correctly docume
 
 **Your documentation is key:** By keeping it up to date, you improve the functionality of this MCP and future ecosystem tools. If your microservice is not documented or you simply don't know how to do it, check the documentation guide.
 
-👉 **[Guide: How to correctly document microservices](https://rappidev.atlassian.net/wiki/spaces/SHS/pages/4864868376/MCP+DevEx)**
+👉 **[Guide: How to correctly document microservices]**
 
 # 🚀 Installation
 
