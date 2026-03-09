@@ -39,12 +39,12 @@ The MCP can only obtain information from microservices that are correctly docume
 
 **macOS:**
 ```bash
-curl https://api.platform.rappi.com/v1/devex-mcp/install | bash
+curl https://api/v1/devex-mcp/install | bash
 ```
 
 **Windows (PowerShell):**
 ```powershell
-irm https://api.platform.rappi.com/v1/devex-mcp/install.ps1 | iex
+irm https://api/v1/devex-mcp/install.ps1 | iex
 ```
 
 The installer will handle:
@@ -78,7 +78,7 @@ Searches for microservices in the Rappi Catalog based on a name, partial match, 
 ```json
 {
   "service_name": "service-name",
-  "repository": "https://github.com/rappi/...",
+  "repository": "https://github.com/...",
   "metadata": {
     "area": "...",
     "team": "...",
@@ -180,8 +180,8 @@ Auto-installation component that automatically configures the tool on users' com
 - `setup.ps1` - Installation script for Windows (PowerShell)
 
 These scripts are automatically served from the server at:
-- `https://api.platform.rappi.com/v1/devex-mcp/install` (macOS/Linux)
-- `https://api.platform.rappi.com/v1/devex-mcp/install.ps1` (Windows)
+- `https://api/v1/devex-mcp/install` (macOS/Linux)
+- `https://api/v1/devex-mcp/install.ps1` (Windows)
 
 ---
 ---
@@ -198,7 +198,7 @@ These scripts are automatically served from the server at:
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/rappi-inc/devex-mcp.git
+git clone https://github.com/devex-mcp.git
 cd devex-mcp
 
 # 2. Install dependencies
