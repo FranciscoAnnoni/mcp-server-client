@@ -39,12 +39,12 @@ The MCP can only obtain information from microservices that are correctly docume
 
 **macOS:**
 ```bash
-curl https://api/v1/devex-mcp/install | bash
+curl https://api.com/v1/devex-mcp/install | bash
 ```
 
 **Windows (PowerShell):**
 ```powershell
-irm https://api/v1/devex-mcp/install.ps1 | iex
+irm https://api.com/v1/devex-mcp/install.ps1 | iex
 ```
 
 The installer will handle:
